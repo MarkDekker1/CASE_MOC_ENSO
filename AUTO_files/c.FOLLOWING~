@@ -1,0 +1,68 @@
+#===================================================
+# Primary settings
+#===================================================
+
+# Problem Constants
+NDIM=3
+
+# Output Control
+unames={1: 'T1', 2:'T2', 3:'h1'}
+parnames={1: 'tau_ext', 2:'eps',3:'zeta',4: 'mu'}
+NPR=20000
+
+# Free Parameters
+ICP=['tau_ext']
+
+# Limits
+UZR={'mu':0.032, 'eps':0.1, 'zeta':0.1, 'zeta':0.5, 'zeta':1, 'zeta':1.5, 'zeta':2}
+UZSTOP={'tau_ext':[-0.5,0.5],'eps':[-0.01,1],'zeta':[0.01,2.1],'mu':[0.001,0.1]}, NMX=200000
+
+# Computation Constants
+IPS=1, IRS=0
+
+# Continuation Step Size
+DS=1e-4, DSMIN=1e-5, DSMAX=1e-2
+
+# Discretization Constants
+NTST=50
+
+#===================================================
+# Secondary settings
+#===================================================#
+
+# Problem Constants
+NPAR=4, JAC=0
+
+# Discretization Constants
+#NCOL=4, IAD=3
+
+# Tolerances
+EPSL=1e-6, EPSU=1e-7, EPSS=1e-3, ITMX=8, NWTN=3, ITNW=5, IIS=3
+
+# Continuation Step Size
+IADS=9, THL={}, THU={}
+
+# Limits
+#STOP = []
+#RL0=-1.7976e+308, RL1=1.7976e+308, A0=-1.7976e+308, A1=1.7976e+308
+
+# Computation Constants
+ISP=2
+#ILP=1, SP=[], ISP=2, ISW=1, MXBF=10, s='', dat='', U={}, PAR={}, TY=''
+
+# Output Control
+#e = '', sv='', IBR=0, LAB=0, IIS=3, IID=2, IPLT=0, UZR={}
+
+#===================================================
+# Inactive (now unimportant) settings
+#===================================================
+
+# Problem Constants
+#NBC=0, NINT=0
+
+#===================================================
+# Homcont settings
+#===================================================
+
+#NUNSTAB = -1, NSTAB = -1, IEQUIB = 1, ITWIST = 0, ISTART = 5
+#IREV = [], IFIXED = [], IPSI = []

@@ -24,7 +24,7 @@ IPS=1, IRS=0
 DS=1e-4, DSMIN=1e-5, DSMAX=1e-2
 
 # Discretization Constants
-NTST=5
+NTST=50
 
 #===================================================
 # Secondary settings
