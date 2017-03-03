@@ -8,15 +8,15 @@ print "\n***Generate starting data***"
 # Run for eps
 #===================================================
 
-print "\n***Instable equilibrium run***"
-RUN0=run(e='FOLLOWING_TrivialEq',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING_TrivialEq',c='FOLLOWING',ICP=['eps'],DS='-')
+#print "\n***Instable equilibrium run***"
+#RUN0=run(e='FOLLOWING_TrivialEq',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING_TrivialEq',c='FOLLOWING',ICP=['eps'],DS='-')
 
-print "\n***Standard run***"
-RUN1=run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'],DS='-')
+#print "\n***Standard run***"
+#RUN1=run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'],DS='-')
 
-print "\n***Minima/maxima***"
-RUN2 = run(RUN1("HB2"),ICP=['eps',11],ISW=-1,IPS=2,ISP=2,DS=-1e-3, DSMIN=1e-5, DSMAX=1e0,SP=['LP0','BP0'],UZR={},NTST=10,UZSTOP={'PERIOD':[-10000,10000]})
-p3=plot(RUN0+RUN1+ RUN2 , stability=True, coloring_method= 'type', use_labels=False, line_width=4, xlabel_fontsize=15 ,ylabel_fontsize=15,height=300, grid=False,letter_symbols=False, bifurcation_symbol=' ',bifurcation_y='MAX T2')
+#print "\n***Minima/maxima***"
+#RUN2 = run(RUN1("HB2"),ICP=['eps',11],ISW=-1,IPS=2,ISP=2,DS=-1e-3, DSMIN=1e-5, DSMAX=1e0,SP=['LP0','BP0'],UZR={},NTST=10,UZSTOP={'PERIOD':[-10000,10000]})
+#p3=plot(RUN0+RUN1+ RUN2 , stability=True, coloring_method= 'type', use_labels=False, line_width=4, xlabel_fontsize=15 ,ylabel_fontsize=15,height=300, grid=False,letter_symbols=False, bifurcation_symbol=' ',bifurcation_y='MAX T2')
 
 
 #===================================================
@@ -38,13 +38,13 @@ p3=plot(RUN0+RUN1+ RUN2 , stability=True, coloring_method= 'type', use_labels=Fa
 # Run for tau_ext
 #===================================================
 
-#print "\n***Set eps to 0.1***"
-#RUN0=run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'],DS='-')
+print "\n***Set eps to 0.1***"
+RUN0=run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'])+run(e='FOLLOWING',c='FOLLOWING',ICP=['eps'],DS='-')
 
-#print "\n***Standard run***"
-#RUN1=run(RUN0('UZ1'),ICP=['tau_ext'])+run(RUN0('UZ1'),ICP=['tau_ext'],DS='-')
+print "\n***Standard run***"
+RUN1=run(RUN0('UZ1'),ICP=['tau_ext'])+run(RUN0('UZ1'),ICP=['tau_ext'],DS='-')
 
-#p3=plot(RUN1, stability=True, coloring_method= 'type', use_labels=False, line_width=4, xlabel_fontsize=15 ,ylabel_fontsize=15,height=300, grid=False,letter_symbols=False, bifurcation_symbol=' ')
+p3=plot(RUN1, stability=True, coloring_method= 'type', use_labels=False, line_width=4, xlabel_fontsize=15 ,ylabel_fontsize=15,height=300, grid=False,letter_symbols=False, bifurcation_symbol=' ')
 
 #===================================================
 # Run for tau_ext (different zetas)
