@@ -73,5 +73,5 @@ p3=plot(RUN0+RUN1+ RUN2 , stability=True, coloring_method= 'type', use_labels=Fa
 
 #p3=plot(RUN4, stability=True, coloring_method= 'branch', use_labels=False, line_width=4, xlabel_fontsize=15 ,ylabel_fontsize=15,height=300, grid=False,letter_symbols=False, bifurcation_symbol=' ',bifurcation_y='T2')
 
-#print "\n***Clean the directory***"
-#cl()
+print "\n***Clean the directory***"
+cl()
