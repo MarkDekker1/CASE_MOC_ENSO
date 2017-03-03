@@ -1,0 +1,18 @@
+#===================================================
+# General auto file
+#===================================================
+
+print "\n***Generate starting data***"
+
+print "\n***Run with parameter alpha***"
+
+RUN1=run(e='LEADING',c='LEADING',ICP=['Th'])+run(e='LEADING',c='LEADING',ICP=['Th'],DS='-')
+#p0=plot(RUN1,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False)
+
+RUN2= run(RUN1('UZ1'),ICP=['Fs'])+run(RUN1('UZ1'),ICP=['Fs'],DS='-')
+#plot(RUN2,stability=True)
+p0=plot(RUN2,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False)
+
+
+print "\n***Clean the directory***"
+cl()

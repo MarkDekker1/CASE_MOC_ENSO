@@ -18,14 +18,14 @@ import matplotlib.pyplot as plt
 # INTEGRATION PARAMETERS
 # ---------------------------------------------- #
 
-tmax=100000.
-dt=1
+tmax=1000000.
+dt=10
 
 # ---------------------------------------------- #
 # PHYSICAL PARAMETERS (TAB 10.3, NCD) (IN DAYS)
 # ---------------------------------------------- #
 
-tr = 25.                    # temperature relaxation tscale
+tr = 2500.                  # temperature relaxation tscale (NORMALLY 25!)
 H = 4500.                   # mean ocean depth
 td = 180.*365.              # diffusion time scale
 ta = 29.*365.               # advective time scale
@@ -35,8 +35,10 @@ alphat = 1e-4               # thermal expansion coefficient
 alphas = 76e-5              # haline contraction coefficient
 S0 = 35                     # Reference salinity
 Th = 25                     # meridional temp diff
-rho0 = 1029.                # Reference density
+rho0 = 1.                   # Reference density
 F0 = 2.3/365                # Scale freshwater flux
+Fs = 0.001
+gamma=10
         
 # ---------------------------------------------- #
 # INITIAL CONDITIONS
@@ -46,18 +48,26 @@ DT0 = 0.2
 DS0 = 0.2
 
 # ---------------------------------------------- #
-# HELPER EQUATIONS
+# FORCING
 # ---------------------------------------------- #
 
+def force():
+    global Fs
+    Fs=min(0.006+max(0.00000005*(t-400000),0),0.0082)
+    
+# ---------------------------------------------- #
+# HELPER EQUATIONS
+# ---------------------------------------------- #
+    
+def flow(DT,DS):
+    return gamma*Drhof(DT,DS)/rho0
+
 def Q(Drho):
-    return 1./td+q*Drho**2./(rho0**2*V)
+    return 1./td+q*Drho**2./(V)
     
 def Drhof(DT,DS):
-    return 1.-alphat*DT+alphas*DS
+    return rho0*(alphat*DT-alphas*DS)
     
-def Fs(t):
-    return min(F0+max(t-200,0)*0.1*F0,5*F0)
-
 # ---------------------------------------------- #
 # DIFFERENTIAL EQUATIONS
 # ---------------------------------------------- #
@@ -66,7 +76,7 @@ def dDT(t,DT,DS):
     return -1./tr*(DT-Th)-Q(Drhof(DT,DS))*DT
 
 def dDS(t,DT,DS):
-    return Fs(t)*S0/H-Q(Drhof(DT,DS))*DS
+    return Fs*S0/H-Q(Drhof(DT,DS))*DS
 
 # ---------------------------------------------- #
 # TIME INTEGRATION LOOP
@@ -74,7 +84,9 @@ def dDS(t,DT,DS):
 
 DTvec=[DT0]
 DSvec=[DS0]
-Fvec=[Fs(0)]
+PSIvec=[DS0]
+Fvec=[Fs]
+PSIvec=[flow(DT0,DS0)]
 tvec=[0]
 i=0
 while i<tmax/dt:
@@ -94,15 +106,20 @@ while i<tmax/dt:
     DTvec.append(DTnew)
     DSvec.append(DSnew)
     
-    Fvec.append(Fs(t))
+    Fvec.append(Fs)
+    PSIvec.append(flow(DTnew,DSnew))
     tvec.append(t)
+    force()
     i=i+1
 
-tvec=np.array(tvec)/365.
-
-plt.plot(tvec,DTvec,linewidth=3)
-plt.plot(tvec,DSvec,linewidth=3)
-plt.plot(tvec,np.array(Fvec)*10,linewidth=3)
-plt.legend([r'$\Delta T$',r'$\Delta S$',r'$Fs(t)$'],loc='best')
-plt.xlim([0,tvec[-1]])
-plt.ylim([0,30])
+tvec=np.array(tvec)/1.
+#plt.plot(tvec,DTvec,linewidth=3)
+#plt.plot(tvec,DSvec,linewidth=3)
+plt.plot(tvec,np.array(Fvec),linewidth=3)
+plt.plot(tvec,np.array(PSIvec),linewidth=3)
+plt.legend([r'$F_s$',r'$\Psi$',r'$Fs(t)*100$'],loc='best')
+plt.xlim([10000,tvec[-1]])
+#plt.ylim([-0.002,0.02])
+plt.xlabel('Time',fontsize=15)
+plt.ylabel(r'Variables',fontsize=15)
+plt.tick_params(axis='both',which='major',labelsize=15)

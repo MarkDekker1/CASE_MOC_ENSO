@@ -18,59 +18,75 @@ import matplotlib.pyplot as plt
 # INTEGRATION PARAMETERS
 # ---------------------------------------------- #
 
-tmax=5000.
-dt=0.1
+tmax=30000
+dt=1
 
 # ---------------------------------------------- #
 # PHYSICAL PARAMETERS (TAB 8.6, NCD, TAB 1, Roberts)
 # ---------------------------------------------- #
 
-Tr0 = 16
-Tr = 29.5
-alpha = 1/180.
-H = 100
-hstar = 62
-eps = 0.11
+Tr0 = 16.
+alpha = 1./180.
+H = 100.
+hstar = 62.
 L = 15e6
-r = 1/400.
-z0 = 75
+r = 1./400.
+z0 = 75.
 mu = 0.0026
 zeta = 1.3
-kwant = 22
-        
+Q = 22.
+beta=mu/0.02
+b = 22*beta/(mu*L)
+Tr = 29.5
+Hm = 50.
+tau_ext=-0.01
+eps=0.1
+
 # ---------------------------------------------- #
 # INITIAL CONDITIONS
 # ---------------------------------------------- #
         
-T10 = 1
-T20 = 1
-h10 = 1
+T10 = 0
+T20 = 0
+h10 = 0
+
+# ---------------------------------------------- #
+# FORCING
+# ---------------------------------------------- #
+
+def force():
+    global tau_ext
+    tau_ext=min(-0.01+max(t-10000,0)*0.00001,0.00001)
 
 # ---------------------------------------------- #
 # HELPER EQUATIONS
 # ---------------------------------------------- #
 
-def Tsub(T1,T2,h1):
-    return (Tr+Tr0)/2.-(Tr-Tr0)/2.*np.tanh((H-z0+h1+kwant*(T2-T1))/hstar)
+def tau(T1,T2,h1):
+    return tau_ext+mu/beta*(T2-T1)
     
-def tau(T1,T2):
-    return tau_ext(25)+mu*(T2-T1)
+def u(T1,T2,h1):
+    return eps*beta*tau(T1,T2,h1)*L/2.
     
-def tau_ext(DT):
-    return DT/100.*mu
+def w(T1,T2,h1):
+    return -zeta*beta*tau(T1,T2,h1)*Hm
+    
+def h2(T1,T2,h1):
+    return h1+b*L*tau(T1,T2,h1)
 
 # ---------------------------------------------- #
 # DIFFERENTIAL EQUATIONS
 # ---------------------------------------------- #
 
-def dT1(DT,T1,T2,h1):
-    return -alpha*(T1-Tr)-eps*tau(T1,T2)*(T2-T1)
+def dT1(t,T1,T2,h1):
+    return -alpha*(T1-Tr)-(T2-T1)*u(T1,T2,h1)/(L/2.)
 
-def dT2(DT,T1,T2,h1):
-    return -alpha*(T2-Tr)-zeta*tau(T1,T2)*(T2-Tsub(T1,T2,h1))
+def dT2(t,T1,T2,h1):
+    Tsub = Tr-(Tr-Tr0)/2.*(1.-np.tanh((H-z0+h2(T1,T2,h1))/hstar))
+    return -alpha*(T2-Tr)-(T2-Tsub)*w(T1,T2,h1)/Hm
     
-def dh1(DT,T1,T2,h1):
-    return r*(-h1-kwant*(T2-T1)/2.)
+def dh1(t,T1,T2,h1):
+    return r*(-h1-b*L*tau(T1,T2,h1)/2.)
 
 # ---------------------------------------------- #
 # TIME INTEGRATION LOOP
@@ -79,7 +95,6 @@ def dh1(DT,T1,T2,h1):
 T1vec=[T10]
 T2vec=[T20]
 Hvec=[h10]
-Cvec=[tau(T10,T20)]
 tvec=[0]
 i=0
 while i<tmax/dt:
@@ -107,15 +122,17 @@ while i<tmax/dt:
     T2vec.append(T2new)
     Hvec.append(h1new)
     
-    Cvec.append(tau(T1new,T2new))
     tvec.append(t)
+    force()
     i=i+1
 
-tvec=np.array(tvec)/365.
+tvec=np.array(tvec)/1.
 
 plt.plot(tvec,T1vec,linewidth=3)
 plt.plot(tvec,T2vec,linewidth=3)
 plt.plot(tvec,np.array(Hvec),linewidth=3)
 plt.legend([r'$T_1$',r'$T_2$',r'$h_1$'],loc='best')
-plt.xlim([0,tvec[-1]])
-#plt.ylim([0,30])
+plt.xlim([5000,tvec[-1]])
+plt.xlabel('Time',fontsize=15)
+plt.ylabel(r'Variables',fontsize=15)
+plt.tick_params(axis='both',which='major',labelsize=15)
