@@ -113,13 +113,22 @@ while i<tmax/dt:
     i=i+1
 
 tvec=np.array(tvec)/1.
-#plt.plot(tvec,DTvec,linewidth=3)
+
+#%%
+fig,ax = plt.subplots(figsize=(8,4))
 #plt.plot(tvec,DSvec,linewidth=3)
-plt.plot(tvec,np.array(Fvec),linewidth=3)
-plt.plot(tvec,np.array(PSIvec),linewidth=3)
-plt.legend([r'$F_s$',r'$\Psi$',r'$Fs(t)*100$'],loc='best')
-plt.xlim([10000,tvec[-1]])
+ax.plot(tvec,np.array(Fvec),linewidth=3)
+ax.plot(tvec,np.array(PSIvec),linewidth=3)
+ax.legend([r'$F_s$',r'$\Psi$'],loc='lower left')
+ax.set_xlim([10000,tvec[-1]])
 #plt.ylim([-0.002,0.02])
-plt.xlabel('Time',fontsize=15)
-plt.ylabel(r'Variables',fontsize=15)
-plt.tick_params(axis='both',which='major',labelsize=15)
+ax.set_xlabel('Time',fontsize=15)
+ax.set_ylabel(r'Variables',fontsize=15)
+ax.tick_params(axis='both',which='major',labelsize=15)
+
+ax2 = ax.twinx()
+ax2.plot(tvec,DTvec,'r',linewidth=3)
+ax2.set_ylabel(r'$\Delta T$',fontsize=15)
+ax2.tick_params(axis='both',which='major',labelsize=15)
+ax2.legend([r'$\Delta T$'],loc='lower right')
+ax2.set_ylim([15,25])

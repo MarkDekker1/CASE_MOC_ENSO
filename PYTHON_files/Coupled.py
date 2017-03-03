@@ -8,12 +8,13 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from time import *
 
 # ---------------------------------------------- #
 # INTEGRATION PARAMETERS
 # ---------------------------------------------- #
 
-tmax=400000.
+tmax=500000.
 dt=1
 
 # ---------------------------------------------- #
@@ -71,11 +72,11 @@ h10 = 0
 
 def force():
     global Fs
-    Fs=min(0.006+max(0.00000005*(t-40000),0),0.0082)
+    Fs=min(0.006+max(0.0000001*(t-100000),0),0.0082)
     
 def couple(DT):
     global tau_ext
-    tau_ext=-0.01+0.01*(DT-23)
+    tau_ext=-0.01+0.01*max(DT-23,0)
     
 # ---------------------------------------------- #
 # HELPER EQUATIONS
@@ -136,6 +137,8 @@ T2vec=[T20]
 Hvec=[h10]
 tvec=[0]
 i=0
+print 'Computing Integration...'
+start = clock()
 while i<tmax/dt:
     t=i*dt  
     force()
@@ -184,6 +187,9 @@ while i<tmax/dt:
     
     tvec.append(t)
     i=i+1
+    if np.mod(t,np.int(tmax/100.))==0:
+        print np.int(t/tmax*100) ,'% complete'
+print 'done in %.3f seconds!' % (clock()-start)
 
 tvec=np.array(tvec)/1.
 #%%
@@ -199,7 +205,7 @@ ax2 = ax1.twinx()
 ax2.plot(tvec,T1vec,'b',linewidth=3)
 ax2.plot(tvec,T2vec,'r',linewidth=3)
 ax2.plot(tvec,np.array(Hvec),'y',linewidth=3)
-ax2.set_xlim([0,tvec[-1]])
+ax2.set_xlim([0000,tvec[-1]])
 #plt.ylim([-0.002,0.02])
 l2=ax2.legend([r'$T_1$',r'$T_2$',r'$h_1$'],loc='upper right')
 l2.set_zorder(10)

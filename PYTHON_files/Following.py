@@ -13,13 +13,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from time import *
 
 # ---------------------------------------------- #
 # INTEGRATION PARAMETERS
 # ---------------------------------------------- #
 
-tmax=30000
-dt=1
+tmax=60000
+dt=0.1
 
 # ---------------------------------------------- #
 # PHYSICAL PARAMETERS (TAB 8.6, NCD, TAB 1, Roberts)
@@ -56,7 +57,7 @@ h10 = 0
 
 def force():
     global tau_ext
-    tau_ext=min(-0.01+max(t-10000,0)*0.00001,0.00001)
+    tau_ext=min(-0.01+max(t-20000,0)*0.00001,0.00001)
 
 # ---------------------------------------------- #
 # HELPER EQUATIONS
@@ -97,6 +98,8 @@ T2vec=[T20]
 Hvec=[h10]
 tvec=[0]
 i=0
+print 'Computing Integration...'
+start = clock()
 while i<tmax/dt:
     t=i*dt
     
@@ -125,14 +128,26 @@ while i<tmax/dt:
     tvec.append(t)
     force()
     i=i+1
+    if np.mod(t,np.int(tmax/10.))==0:
+        print np.int(t/tmax*100) ,'% complete'
+print 'done in %.3f seconds!' % (clock()-start)
 
 tvec=np.array(tvec)/1.
+#%%
+fig,ax = plt.subplots(figsize=(8,4))
+ax.plot(tvec,T1vec,'b',linewidth=3)
+ax.plot(tvec,T2vec,'r',linewidth=3)
+ax.legend([r'$T_1$',r'$T_2$'],loc='best')
+ax.set_xlim([5000,tvec[-1]])
+ax2.set_ylim([10,30])
+ax.set_xlabel('Time',fontsize=15)
+ax.set_ylabel(r'$T_1$, $T_2$',fontsize=15)
+ax.set_xticks([0,10000,20000,30000,40000,50000])
+ax.tick_params(axis='both',which='major',labelsize=15)
 
-plt.plot(tvec,T1vec,linewidth=3)
-plt.plot(tvec,T2vec,linewidth=3)
-plt.plot(tvec,np.array(Hvec),linewidth=3)
-plt.legend([r'$T_1$',r'$T_2$',r'$h_1$'],loc='best')
-plt.xlim([5000,tvec[-1]])
-plt.xlabel('Time',fontsize=15)
-plt.ylabel(r'Variables',fontsize=15)
-plt.tick_params(axis='both',which='major',labelsize=15)
+ax2=ax.twinx()
+ax2.plot(tvec,np.array(Hvec),'g',linewidth=3)
+ax2.set_ylabel(r'$h_1$',fontsize=15)
+ax2.tick_params(axis='both',which='major',labelsize=15)
+ax2.legend([r'$h_1$'],loc='lower right')
+ax2.set_ylim([20,130])
