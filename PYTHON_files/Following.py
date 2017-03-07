@@ -56,7 +56,7 @@ h10 = 0
 
 def force():
     global tau_ext
-    tau_ext=min(-0.01+max(t-10000,0)*0.00001,0.00001)
+    tau_ext=0.#min(-0.01+max(t-10000,0)*0.00001,0.00001)
 
 # ---------------------------------------------- #
 # HELPER EQUATIONS
@@ -96,6 +96,7 @@ T1vec=[T10]
 T2vec=[T20]
 Hvec=[h10]
 tvec=[0]
+tauvec=[tau(T10,T20,h10)]
 i=0
 while i<tmax/dt:
     t=i*dt
@@ -121,6 +122,7 @@ while i<tmax/dt:
     T1vec.append(T1new)
     T2vec.append(T2new)
     Hvec.append(h1new)
+    tauvec.append(tau(T1new,T2new,h1new))
     
     tvec.append(t)
     force()
