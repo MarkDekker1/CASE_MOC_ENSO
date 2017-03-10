@@ -14,8 +14,8 @@ from time import *
 # INTEGRATION PARAMETERS
 # ---------------------------------------------- #
 
-tmax=500000.
-dt=1
+tmax=2000000.
+dt=0.1
 
 # ---------------------------------------------- #
 # PHYSICAL PARAMETERS (TAB 10.3, NCD) (IN DAYS)
@@ -62,9 +62,9 @@ eps=0.1
 DT0 = 0.2
 DS0 = 0.2
  
-T10 = 0
-T20 = 0
-h10 = 0
+T10 = 20
+T20 = 20
+h10 = 80
 
 # ---------------------------------------------- #
 # FORCING AND COUPLING
@@ -76,7 +76,8 @@ def force():
     
 def couple(DT):
     global tau_ext
-    tau_ext=-0.01+0.01*max(DT-23,0)
+    #tau_ext=-0.01+0.01*max(DT-23,0)
+    tau_ext=DT*0.0035-0.085
     
 # ---------------------------------------------- #
 # HELPER EQUATIONS
@@ -135,6 +136,7 @@ PSIvec=[flow(DT0,DS0)]
 T1vec=[T10]
 T2vec=[T20]
 Hvec=[h10]
+tauvec=[tau_ext]
 tvec=[0]
 i=0
 print 'Computing Integration...'
@@ -184,10 +186,11 @@ while i<tmax/dt:
     T1vec.append(T1new)
     T2vec.append(T2new)
     Hvec.append(h1new)
+    tauvec.append(tau_ext)
     
     tvec.append(t)
     i=i+1
-    if np.mod(t,np.int(tmax/100.))==0:
+    if np.mod(t,np.int(tmax/10.))==0:
         print np.int(t/tmax*100) ,'% complete'
 print 'done in %.3f seconds!' % (clock()-start)
 
